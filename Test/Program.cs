@@ -25,6 +25,8 @@ namespace Test
                 Console.WriteLine(info.Id);
             }
 
+            var u = wrapper.ImageFetcher.GetImageInfo(298297);
+
             Console.ReadLine();
         }
     }

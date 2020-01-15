@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace GeneralizableMoebooruAPI.Features
 {
@@ -125,6 +126,53 @@ namespace GeneralizableMoebooruAPI.Features
             item.ImageUrls = downloads;
 
             return item;
+        }
+
+        public ImageInfo GetImageInfo(int id)
+        {
+            try
+            {
+                var response = HttpRequest.CreateRequest($"{Option.ApiBaseUrl}post/show/{id}");
+
+                using var reader = new StreamReader(response.GetResponseStream());
+                var content = reader.ReadToEnd();
+
+                const string CONTENT_HEAD = "Post.register_resp(";
+                var start_index = content.LastIndexOf(CONTENT_HEAD);
+
+                if (start_index < 0)
+                {
+                    Log.Warn($"Can't get any information with id {id}.");
+                    return null;
+                }
+
+                start_index += CONTENT_HEAD.Length;
+                StringBuilder builder = new StringBuilder(1024);
+                int stack = 1;
+
+                foreach (var ch in content.Skip(start_index))
+                {
+                    if (ch == ')')
+                    {
+                        stack--;
+                        if (stack == 0)
+                            break;
+                    }
+
+                    if (ch == '(')
+                        stack++;
+
+                    builder.Append(ch);
+                }
+
+                var result = JsonConvert.DeserializeObject(builder.ToString()) as JObject;
+                return BuildItem((result["posts"] as JArray).FirstOrDefault());
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return null;
+            }
         }
     }
 }
