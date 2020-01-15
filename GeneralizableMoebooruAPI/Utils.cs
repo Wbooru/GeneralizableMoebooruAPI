@@ -6,9 +6,9 @@ using System.IO;
 using System.Net;
 using System.Text;
 
-namespace GeneralizableMoebooruAPI.Utils
+namespace GeneralizableMoebooruAPI
 {
-    public static class IHttpRequestExtension
+    public static class Utils
     {
         public static string GetString(this WebResponse response)
         {

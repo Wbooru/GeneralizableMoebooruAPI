@@ -19,13 +19,16 @@ namespace GeneralizableMoebooruAPI
 
         private APIWrapperOption option;
 
-        private ImageFetcher _fetcher;
-        public ImageFetcher ImageFetcher => _fetcher ?? (_fetcher = new ImageFetcher(option));
+        private ImageFetcher fetcher;
+        public ImageFetcher ImageFetcher => fetcher ?? (fetcher = new ImageFetcher(option));
 
-        private ImageVoter _voter;
-        public ImageVoter ImageVoter => _voter ?? (_voter = new ImageVoter(option));
+        private ImageVoter voter;
+        public ImageVoter ImageVoter => voter ?? (voter = new ImageVoter(option));
 
-        private AccountManager _account_manager;
-        public AccountManager AccountManager => _account_manager ?? (_account_manager = new AccountManager(option));
+        private AccountManager account_manager;
+        public AccountManager AccountManager => account_manager ?? (account_manager = new AccountManager(option));
+
+        private TagSearcher tag_searcher;
+        public TagSearcher TagSearcher => tag_searcher ?? (tag_searcher = new TagSearcher(option));
     }
 }
