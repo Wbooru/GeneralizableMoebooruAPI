@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GeneralizableMoebooruAPI.Bases;
+using System;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -6,7 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace GeneralizableMoebooruAPI
+namespace GeneralizableMoebooruAPI.Features
 {
     public class AccountManager : FeatureBase
     {

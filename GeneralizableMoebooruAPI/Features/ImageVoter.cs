@@ -1,11 +1,12 @@
-﻿using GeneralizableMoebooruAPI.Utils;
+﻿using GeneralizableMoebooruAPI.Bases;
+using GeneralizableMoebooruAPI.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
 using System.Linq;
 
-namespace GeneralizableMoebooruAPI
+namespace GeneralizableMoebooruAPI.Features
 {
     public class ImageVoter : FeatureBase
     {

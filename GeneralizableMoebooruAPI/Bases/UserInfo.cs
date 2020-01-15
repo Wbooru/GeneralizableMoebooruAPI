@@ -1,4 +1,4 @@
-﻿namespace GeneralizableMoebooruAPI
+﻿namespace GeneralizableMoebooruAPI.Bases
 {
     public class UserInfo
     {

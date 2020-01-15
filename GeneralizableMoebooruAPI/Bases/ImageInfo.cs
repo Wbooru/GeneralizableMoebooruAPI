@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GeneralizableMoebooruAPI
+namespace GeneralizableMoebooruAPI.Bases
 {
     public class ImageInfo
     {

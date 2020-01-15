@@ -1,4 +1,5 @@
-﻿using GeneralizableMoebooruAPI.Interfaces;
+﻿using GeneralizableMoebooruAPI.Bases;
+using GeneralizableMoebooruAPI.Interfaces;
 using System;
 
 namespace GeneralizableMoebooruAPI

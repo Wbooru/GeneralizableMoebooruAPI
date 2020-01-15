@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GeneralizableMoebooruAPI
+namespace GeneralizableMoebooruAPI.Features
 {
     public class FeatureBase
     {
