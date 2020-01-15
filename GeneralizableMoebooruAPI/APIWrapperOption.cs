@@ -12,11 +12,17 @@ namespace GeneralizableMoebooruAPI
 
         public ulong PicturesCountPerRequest { get; set; } = 20;
 
+        public string PasswordSalts { get; set; }
+
         public bool TryGetValidFileSize { get; set; } = false;
 
         public IHttpRequest HttpRequest { get; set; } = HttpRequestDefaultImplement.Default;
 
         public ILog Log { get; set; } = LogDefaultImplement.Default;
+
+        internal UserInfo CurrentUser { get; set; }
+
+        public int VoteValue { get; set; } = 3;
 
         internal void Check()
         {

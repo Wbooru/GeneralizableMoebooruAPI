@@ -7,20 +7,15 @@ using System.Linq;
 
 namespace GeneralizableMoebooruAPI
 {
-    public class ImageFetcher
+    public class ImageFetcher:FeatureBase
     {
-        private readonly APIWrapperOption option;
-
-        public ImageFetcher(APIWrapperOption option)
+        public ImageFetcher(APIWrapperOption option) : base(option)
         {
-            this.option = option;
-
-            option.Log.Info($"Created new image fetcher for {option.ApiBaseUrl}");
         }
 
-        public IEnumerable<ImageInfo> GetImages(IEnumerable<string> tags, int page = 1)
+        public IEnumerable<ImageInfo> GetImages(IEnumerable<string> tags=null, int page = 1)
         {
-            var base_url = $"{option.ApiBaseUrl}post.json?limit={option.PicturesCountPerRequest}&";
+            var base_url = $"{Option.ApiBaseUrl}post.json?limit={Option.PicturesCountPerRequest}&";
 
             if (tags?.Any() ?? false)
                 base_url += $"tags={string.Join("+", tags)}&";
@@ -33,7 +28,7 @@ namespace GeneralizableMoebooruAPI
                 {
                     var actual_url = $"{base_url}page={page}";
 
-                    var response = option.HttpRequest.CreateRequest(actual_url);
+                    var response = HttpRequest.CreateRequest(actual_url);
                     using var reader = new StreamReader(response.GetResponseStream());
 
                     json = JsonConvert.DeserializeObject(reader.ReadLine()) as JArray;
@@ -45,14 +40,15 @@ namespace GeneralizableMoebooruAPI
                 }
                 catch (Exception e)
                 {
-                    option.Log.Error($"Get image failed {e.Message}, but It still continue to fetch..");
+                    Log.Error($"Get image failed {e.Message}, but It still continue to fetch..");
                     json = null;
                 }
 
-                foreach (var item in json.Select(x => BuildItem(x)))
-                {
-                    yield return item;
-                }
+                if (json != null)
+                    foreach (var item in json.Select(x => BuildItem(x)))
+                    {
+                        yield return item;
+                    }
             }
         }
 
@@ -122,8 +118,8 @@ namespace GeneralizableMoebooruAPI
                 Url = pic_info["file_url"].ToString(),
             });
 
-            foreach (var info in downloads.Where(x => option.TryGetValidFileSize && x.FileLength <= 0))
-                info.FileLength = option.HttpRequest.CreateRequest(info.Url, req => req.Method = "HEAD").ContentLength;
+            foreach (var info in downloads.Where(x => Option.TryGetValidFileSize && x.FileLength <= 0))
+                info.FileLength = HttpRequest.CreateRequest(info.Url, req => req.Method = "HEAD").ContentLength;
 
             item.ImageUrls = downloads;
 

@@ -10,16 +10,19 @@ namespace Test
         {
             var option = new APIWrapperOption()
             {
-                ApiBaseUrl = "http://konachan.net/"
+                ApiBaseUrl = "http://konachan.net/",
+                PasswordSalts = "So-I-Heard-You-Like-Mupkids-?--your-password--"
             };
 
             var wrapper = new APIWrapper(option);
+            wrapper.AccountManager.Login("MikiraSora","q6523230");
 
-            var images = wrapper.GetImageFetcher.GetImages(null).Take(20).ToArray();
+            wrapper.ImageVoter.SetVoteValue(298297,true);
+            var is_vote = wrapper.ImageVoter.IsVoted(298297);
 
-            foreach (var image in images)
+            foreach (var info in wrapper.ImageFetcher.GetImages(new[] { "stockings", "penis" }).Take(20))
             {
-                Console.WriteLine(image.Id);
+                Console.WriteLine(info.Id);
             }
 
             Console.ReadLine();
