@@ -10,11 +10,13 @@ namespace Test
         {
             var option = new APIWrapperOption()
             {
-                ApiBaseUrl = "http://konachan.net/",
-                PasswordSalts = "So-I-Heard-You-Like-Mupkids-?--your-password--"
+                ApiBaseUrl = "https://yande.re/",
+                PasswordSalts = "choujin-steiner--your-password--"
             };
 
             var wrapper = new APIWrapper(option);
+
+            var i = wrapper.AccountManager.Login("MikiraSora","");
 
             var u = wrapper.ImageFetcher.GetImageInfo(298297);
 

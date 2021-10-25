@@ -22,7 +22,7 @@ namespace GeneralizableMoebooruAPI.Features
                 throw new Exception("option PasswordSalts is empty");
 
             var buffer = SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(Option.PasswordSalts.Replace("your-password", password)));
-            var password_hash = string.Join("", buffer.Select(x => x.ToString("X2")));
+            var password_hash = string.Join("", buffer.Select(x => x.ToString("X2")))/*.ToLower()*/;
 
             var user = new UserInfo() { Name = name };
 
@@ -55,6 +55,30 @@ namespace GeneralizableMoebooruAPI.Features
                     Option.CurrentUser = user;
                     return true;
                 }
+            }
+
+            return LoginByHash(name, password);
+        }
+
+        public bool LoginByHash(string name, string password)
+        {
+            if (string.IsNullOrWhiteSpace(Option.PasswordSalts))
+                throw new Exception("option PasswordSalts is empty");
+
+            var buffer = SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(Option.PasswordSalts.Replace("your-password", password)));
+            var password_hash = string.Join("", buffer.Select(x => x.ToString("X2"))).ToLower();
+
+            var url = $"{Option.ApiBaseUrl}user/home?" + $"login={WebUtility.UrlEncode(name)}&password_hash={password_hash}";
+            var response = HttpRequest.CreateRequest(url, req =>
+            {
+                req.Method = "GET";
+            });
+
+            using var reader = new StreamReader(response.GetResponseStream());
+            if (reader.ReadToEnd().Contains(name))
+            {
+                Option.CurrentUser = new UserInfo() { Name = name, PasswordHash = password_hash };
+                return true;
             }
 
             return false;
