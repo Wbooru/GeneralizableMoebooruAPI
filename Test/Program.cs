@@ -16,9 +16,9 @@ namespace Test
 
             var wrapper = new APIWrapper(option);
 
-            var i = wrapper.AccountManager.Login("MikiraSora","");
+            var i = wrapper.AccountManager.Login("MikiraSora","q6523230");
 
-            var u = wrapper.ImageFetcher.GetImageInfo(298297);
+            var u = wrapper.ImageFetcher.GetImageInfo(298297).DetailUrl;
 
             var a = wrapper.TagSearcher.SearchTags("stock").ToArray();
 

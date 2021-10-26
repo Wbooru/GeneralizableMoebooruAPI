@@ -21,14 +21,11 @@ namespace GeneralizableMoebooruAPI.Features
             if (string.IsNullOrWhiteSpace(Option.PasswordSalts))
                 throw new Exception("option PasswordSalts is empty");
 
-            var buffer = SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(Option.PasswordSalts.Replace("your-password", password)));
-            var password_hash = string.Join("", buffer.Select(x => x.ToString("X2")))/*.ToLower()*/;
-
             var user = new UserInfo() { Name = name };
 
             var cookie_container = new CookieContainer();
-
-            var response = HttpRequest.CreateRequest($"{Option.ApiBaseUrl}user/authenticate", req =>
+            var url = $"{Option.ApiBaseUrl}user/authenticate";
+            var response = HttpRequest.CreateRequest(url, req =>
             {
                 req.Method = "POST";
                 req.CookieContainer = cookie_container;
@@ -37,11 +34,14 @@ namespace GeneralizableMoebooruAPI.Features
                 var csrf_token = WebUtility.UrlEncode(GetCSRFToken(cookie_container));
                 var body = $"authenticity_token={csrf_token}&url=&user%5Bname%5D={name}&user%5Bpassword%5D={password}&commit=Login";
 
+                Log.Debug($"login req url: {url}");
+                Log.Debug($"login req body: {body}");
+
                 using var req_writer = new StreamWriter(req.GetRequestStream());
                 req_writer.Write(body);
                 req_writer.Flush();
             });
-
+            
             var cookies = cookie_container.GetCookies(response.ResponseUri).OfType<Cookie>().ToArray();
 
             using var reader = new StreamReader(response.GetResponseStream());
@@ -53,10 +53,13 @@ namespace GeneralizableMoebooruAPI.Features
                 {
                     user.PasswordHash = cookie.Value;
                     Option.CurrentUser = user;
+                    Log.Debug($"success.");
+
                     return true;
                 }
             }
 
+            Log.Debug($"failed , try to call LoginByHash().");
             return LoginByHash(name, password);
         }
 
@@ -69,6 +72,8 @@ namespace GeneralizableMoebooruAPI.Features
             var password_hash = string.Join("", buffer.Select(x => x.ToString("X2"))).ToLower();
 
             var url = $"{Option.ApiBaseUrl}user/home?" + $"login={WebUtility.UrlEncode(name)}&password_hash={password_hash}";
+            Log.Debug($"login full url:{url}");
+
             var response = HttpRequest.CreateRequest(url, req =>
             {
                 req.Method = "GET";
@@ -78,9 +83,11 @@ namespace GeneralizableMoebooruAPI.Features
             if (reader.ReadToEnd().Contains(name))
             {
                 Option.CurrentUser = new UserInfo() { Name = name, PasswordHash = password_hash };
+                Log.Debug($"success.");
                 return true;
             }
 
+            Log.Debug($"failed.");
             return false;
         }
 

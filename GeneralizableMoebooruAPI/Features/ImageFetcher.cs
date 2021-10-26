@@ -78,6 +78,7 @@ namespace GeneralizableMoebooruAPI.Features
             item.Tags = pic_info["tags"].ToString().Split(' ').ToList();
             item.Author = pic_info["creator_id"].ToString();
             item.Source = pic_info["source"].ToString();
+            item.DetailUrl = $"{Option.ApiBaseUrl}post/show/{item.Id}";
             item.CreateDateTime = DateTimeOffset.FromUnixTimeSeconds(pic_info["created_at"].ToObject<long>()).DateTime;
             item.Author = pic_info["author"].ToString();
             item.Score = pic_info["score"].ToObject<int>();

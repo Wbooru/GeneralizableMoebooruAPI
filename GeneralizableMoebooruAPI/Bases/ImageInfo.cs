@@ -9,6 +9,7 @@ namespace GeneralizableMoebooruAPI.Bases
         public Rating Rating { get; internal set; }
         public string Author { get; set; }
         public string Source { get; set; }
+        public string DetailUrl { get; set; }
         public DateTime CreateDateTime { get; set; }
         public int Score { get; set; }
         public IEnumerable<string> Tags { get; set; }
