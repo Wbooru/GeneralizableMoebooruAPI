@@ -4,7 +4,7 @@
     <LangVersion>preview</LangVersion>
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>GeneralizableMoebooruAPI</AssemblyName>
-    <Version>0.8.0</Version>
+    <Version>0.9.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Description>This library could implement Moebooru APIs and wraps them.
