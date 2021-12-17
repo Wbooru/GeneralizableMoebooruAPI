@@ -1,12 +1,14 @@
 ﻿using GeneralizableMoebooruAPI;
+using GeneralizableMoebooruAPI.Interfaces;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Test
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var option = new APIWrapperOption()
             {
@@ -16,11 +18,14 @@ namespace Test
 
             var wrapper = new APIWrapper(option);
 
-            var i = wrapper.AccountManager.Login("MikiraSora","q6523230");
+            var i = await wrapper.AccountManager.LoginAsync("MikiraSora","q6523230");
 
-            var u = wrapper.ImageFetcher.GetImageInfo(298297).DetailUrl;
+            var u = (await wrapper.ImageFetcher.GetImageInfoAsync(298297)).DetailUrl;
 
-            var a = wrapper.TagSearcher.SearchTags("stock").ToArray();
+            await foreach (var tag in wrapper.TagSearcher.SearchTagsAsync("stock"))
+            {
+                Console.WriteLine(tag.Name);
+            }
 
             Console.ReadLine();
         }

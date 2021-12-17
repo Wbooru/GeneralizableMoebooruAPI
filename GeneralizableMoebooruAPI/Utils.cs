@@ -5,23 +5,24 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace GeneralizableMoebooruAPI
 {
     public static class Utils
     {
-        public static string GetString(this WebResponse response)
+        public static async ValueTask<string> GetStringAsync(this WebResponse response)
         {
             using var reader = new StreamReader(response.GetResponseStream());
 
-            return reader.ReadToEnd();
+            return await reader.ReadToEndAsync();
         }
 
-        public static T GetJsonContainer<T>(this WebResponse response) where T : JContainer
+        public static async ValueTask<T> GetJsonContainerAsync<T>(this WebResponse response) where T : JContainer
         {
-            return JsonConvert.DeserializeObject(response.GetString()) as T;
+            return JsonConvert.DeserializeObject(await response.GetStringAsync()) as T;
         }
 
-        public static JObject GetJsonObject(this WebResponse response) => GetJsonContainer<JObject>(response);
+        public static ValueTask<JObject> GetJsonObjectAsync(this WebResponse response) => GetJsonContainerAsync<JObject>(response);
     }
 }

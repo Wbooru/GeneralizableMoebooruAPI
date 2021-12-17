@@ -1,25 +1,36 @@
 ﻿using System;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace GeneralizableMoebooruAPI.Interfaces
 {
     public interface IHttpRequest
     {
-        HttpWebResponse CreateRequest(string url, Action<HttpWebRequest> custom = default);
+        ValueTask<HttpWebResponse> CreateRequestAsync(string url);
+        ValueTask<HttpWebResponse> CreateRequestAsync(string url, Func<HttpWebRequest,Task> custom = default);
+        ValueTask<HttpWebResponse> CreateRequestAsync(string url, Action<HttpWebRequest> custom = default);
     }
 
     public class HttpRequestDefaultImplement : IHttpRequest
     {
         public static IHttpRequest Default { get; } = new HttpRequestDefaultImplement();
 
-        public HttpWebResponse CreateRequest(string url, Action<HttpWebRequest> custom = null)
+        public ValueTask<HttpWebResponse> CreateRequestAsync(string url) => CreateRequestAsync(url, _ => Task.CompletedTask);
+
+        public ValueTask<HttpWebResponse> CreateRequestAsync(string url, Action<HttpWebRequest> custom = null) => CreateRequestAsync(url, req =>
+        {
+            custom(req);
+            return Task.CompletedTask;
+        });
+
+        public async ValueTask<HttpWebResponse> CreateRequestAsync(string url, Func<HttpWebRequest, Task> custom = null)
         {
             var req = WebRequest.Create(url);
             req.Method = "GET";
 
-            custom?.Invoke(req as HttpWebRequest);
+            await custom?.Invoke(req as HttpWebRequest);
 
-            return req.GetResponse() as HttpWebResponse;
+            return await req.GetResponseAsync() as HttpWebResponse;
         }
     }
 }

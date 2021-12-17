@@ -14,10 +14,10 @@ namespace GeneralizableMoebooruAPI.Features
 
         }
 
-        public IEnumerable<Tag> SearchTags(string keyword)
+        public async IAsyncEnumerable<Tag> SearchTagsAsync(string keyword)
         {
-            var arr = HttpRequest.CreateRequest($"{Option.ApiBaseUrl}tag.json?order=name&limit=0&name={keyword}")
-                .GetJsonContainer<JArray>();
+            var arr = await (await HttpRequest.CreateRequestAsync($"{Option.ApiBaseUrl}tag.json?order=name&limit=0&name={keyword}"))
+                .GetJsonContainerAsync<JArray>();
 
             foreach (var item in arr)
             {
